@@ -1,9 +1,12 @@
 {
-    "java.project.sourcePaths": ["src"],
+    "java.project.sourcePaths": [
+        "src",
+        "lib"
+    ],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "sqlite-jdbc-3.46.0.0.jar",
-        "slf4j-api-1.7.36.jar"
+        "d:\\GITHUB\\itsec\\ITSECWB_Milestone\\lib\\slf4j-api-1.7.36.jar",
+        "d:\\GITHUB\\itsec\\ITSECWB_Milestone\\lib\\bcrypt-0.10.2.jar",
+        "d:\\GITHUB\\itsec\\ITSECWB_Milestone\\lib\\sqlite-jdbc-3.46.0.0.jar"
     ]
 }

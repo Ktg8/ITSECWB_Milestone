@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src"/>
+    <classpathentry kind="lib" path="lib\bcrypt-0.10.2.jar"/>
+    <!-- Add any other classpath entries as needed -->
+    <classpathentry kind="output" path="bin"/>
+</classpath>
