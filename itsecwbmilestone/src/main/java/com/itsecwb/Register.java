@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -72,11 +73,28 @@ public class Register {
             String password = new String(passwordField.getPassword());
             String photoPath = photoField.getText();
 
+            // Validate inputs
+            if (!isValidName(fullName)) {
+                JOptionPane.showMessageDialog(frame, "Invalid full name. Please enter a valid name.");
+                return;
+            }
+            if (!isValidEmail(email)) {
+                JOptionPane.showMessageDialog(frame, "Invalid email. Please enter a valid email.");
+                return;
+            }
+            if (!isValidPhoneNumber(phoneNumber)) {
+                JOptionPane.showMessageDialog(frame, "Invalid phone number. Please enter a valid phone number.");
+                return;
+            }
+            if (!isValidPassword(password)) {
+                JOptionPane.showMessageDialog(frame, "Invalid password. Password must be at least 8 characters long and contain at least one letter and one number.");
+                return;
+            }
+
             String jdbcString = "jdbc:sqlite:./itsecwbmilestone/SQLite/usersdb.db";
             try (Connection connection = DriverManager.getConnection(jdbcString);
                 //FOR UPLOADING PROFILE PIC
                  FileInputStream fis = new FileInputStream(photoPath)) {
-
 
                 //HASHING LOGIC   
                 XXHashFactory factory = XXHashFactory.fastestInstance();
@@ -107,5 +125,22 @@ public class Register {
         });
 
         frame.setVisible(true);
+    }
+
+    // Validation methods
+    private static boolean isValidName(String name) {
+        return name != null && name.matches("^[\\p{L} .'-]+$");
+    }
+
+    private static boolean isValidEmail(String email) {
+        return email != null && email.matches("^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$");
+    }
+
+    private static boolean isValidPhoneNumber(String phoneNumber) {
+        return phoneNumber != null && phoneNumber.matches("^\\+?\\d{10,15}$");
+    }
+
+    private static boolean isValidPassword(String password) {
+        return password != null && password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$");
     }
 }
