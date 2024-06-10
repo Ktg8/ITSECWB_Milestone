@@ -57,44 +57,47 @@ public class Main {
 
             
             String jdbcString = "jdbc:sqlite:./itsecwbmilestone/SQLite/usersdb.db"; 
-            try (Connection connection = DriverManager.getConnection(jdbcString)) {
-
-                String sql = "SELECT * FROM users WHERE email = ?";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, email);
-                ResultSet resultSet = preparedStatement.executeQuery();
-
+            
                 if (attempts == 0) {
                     //Login lock on too many attempts
                     JOptionPane.showMessageDialog(frame, "Too many login attempts!");
                 }
-                else if (resultSet.next()) {
-                    //SALTING
-                    String storedHash = resultSet.getString("password");
-                    XXHashFactory factory = XXHashFactory.fastestInstance();
-                    XXHash32 hash32 = factory.hash32();
-                    int hash = hash32.hash(password.getBytes(), 0, password.getBytes().length, 0);
-                    //end of salting
-                    
-                    if (Integer.toString(hash).equals(storedHash)) {
-                        JOptionPane.showMessageDialog(frame, "Login successful!");
-                        // next which is admin
-                    } else {
-                        //login lock decrement
-                        attempts--;
-                        JOptionPane.showMessageDialog(frame, "Invalid Login!");
+                else {
+                    try (Connection connection = DriverManager.getConnection(jdbcString)) {
 
+                        String sql = "SELECT * FROM users WHERE email = ?";
+                        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                        preparedStatement.setString(1, email);
+                        ResultSet resultSet = preparedStatement.executeQuery();
+                        if (resultSet.next()) {
+                            //SALTING
+                            String storedHash = resultSet.getString("password");
+                            XXHashFactory factory = XXHashFactory.fastestInstance();
+                            XXHash32 hash32 = factory.hash32();
+                            int hash = hash32.hash(password.getBytes(), 0, password.getBytes().length, 0);
+                            //end of salting
+                            
+                            if (Integer.toString(hash).equals(storedHash)) {
+                                JOptionPane.showMessageDialog(frame, "Login successful!");
+                                // next which is admin
+                            } else {
+                                //login lock decrement
+                                attempts--;
+                                JOptionPane.showMessageDialog(frame, "Invalid Login!");
+        
+                            }
+                        } else {
+                            //login lock decrement
+                            attempts--;
+                            JOptionPane.showMessageDialog(frame, "Invalid Login!");
+                        }
+        
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(frame, "Error connecting to the database");
                     }
-                } else {
-                    //login lock decrement
-                    attempts--;
-                    JOptionPane.showMessageDialog(frame, "Invalid Login!");
+                
                 }
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(frame, "Error connecting to the database");
-            }
         });
 
         registerButton.addActionListener((ActionEvent e) -> {
