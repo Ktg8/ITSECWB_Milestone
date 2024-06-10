@@ -25,6 +25,8 @@ public class Main {
             createAndShowLoginScreen();
         });
     }
+    //Login Attempt loop counter: locks login until app close
+    static int attempts = 3;
 
     private static void createAndShowLoginScreen() {
         JFrame frame = new JFrame("User Login");
@@ -48,10 +50,12 @@ public class Main {
         frame.add(new JLabel());
         frame.add(registerButton);
 
+        
         loginButton.addActionListener((ActionEvent e) -> {
             String email = emailField.getText();
             String password = new String(passwordField.getPassword());
 
+            
             String jdbcString = "jdbc:sqlite:./itsecwbmilestone/SQLite/usersdb.db"; 
             try (Connection connection = DriverManager.getConnection(jdbcString)) {
 
@@ -60,7 +64,11 @@ public class Main {
                 preparedStatement.setString(1, email);
                 ResultSet resultSet = preparedStatement.executeQuery();
 
-                if (resultSet.next()) {
+                if (attempts == 0) {
+                    //Login lock on too many attempts
+                    JOptionPane.showMessageDialog(frame, "Too many login attempts!");
+                }
+                else if (resultSet.next()) {
                     //SALTING
                     String storedHash = resultSet.getString("password");
                     XXHashFactory factory = XXHashFactory.fastestInstance();
@@ -72,10 +80,15 @@ public class Main {
                         JOptionPane.showMessageDialog(frame, "Login successful!");
                         // next which is admin
                     } else {
-                        JOptionPane.showMessageDialog(frame, "Invalid password");
+                        //login lock decrement
+                        attempts--;
+                        JOptionPane.showMessageDialog(frame, "Invalid Login!");
+
                     }
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Invalid email");
+                    //login lock decrement
+                    attempts--;
+                    JOptionPane.showMessageDialog(frame, "Invalid Login!");
                 }
 
             } catch (SQLException ex) {
