@@ -25,6 +25,8 @@ public class Main {
             createAndShowLoginScreen();
         });
     }
+    //Login Attempt loop counter: locks login until app close
+    static int attempts = 3;
 
     private static void createAndShowLoginScreen() {
         JFrame frame = new JFrame("User Login");
@@ -48,40 +50,54 @@ public class Main {
         frame.add(new JLabel());
         frame.add(registerButton);
 
+        
         loginButton.addActionListener((ActionEvent e) -> {
             String email = emailField.getText();
             String password = new String(passwordField.getPassword());
 
+            
             String jdbcString = "jdbc:sqlite:./itsecwbmilestone/SQLite/usersdb.db"; 
-            try (Connection connection = DriverManager.getConnection(jdbcString)) {
-
-                String sql = "SELECT * FROM users WHERE email = ?";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, email);
-                ResultSet resultSet = preparedStatement.executeQuery();
-
-                if (resultSet.next()) {
-                    //SALTING
-                    String storedHash = resultSet.getString("password");
-                    XXHashFactory factory = XXHashFactory.fastestInstance();
-                    XXHash32 hash32 = factory.hash32();
-                    int hash = hash32.hash(password.getBytes(), 0, password.getBytes().length, 0);
-                    //end of salting
-                    
-                    if (Integer.toString(hash).equals(storedHash)) {
-                        JOptionPane.showMessageDialog(frame, "Login successful!");
-                        // next which is admin
-                    } else {
-                        JOptionPane.showMessageDialog(frame, "Invalid password");
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Invalid email");
+            
+                if (attempts == 0) {
+                    //Login lock on too many attempts
+                    JOptionPane.showMessageDialog(frame, "Too many login attempts!");
                 }
+                else {
+                    try (Connection connection = DriverManager.getConnection(jdbcString)) {
 
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(frame, "Error connecting to the database");
-            }
+                        String sql = "SELECT * FROM users WHERE email = ?";
+                        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                        preparedStatement.setString(1, email);
+                        ResultSet resultSet = preparedStatement.executeQuery();
+                        if (resultSet.next()) {
+                            //SALTING
+                            String storedHash = resultSet.getString("password");
+                            XXHashFactory factory = XXHashFactory.fastestInstance();
+                            XXHash32 hash32 = factory.hash32();
+                            int hash = hash32.hash(password.getBytes(), 0, password.getBytes().length, 0);
+                            //end of salting
+                            
+                            if (Integer.toString(hash).equals(storedHash)) {
+                                JOptionPane.showMessageDialog(frame, "Login successful!");
+                                // next which is admin
+                            } else {
+                                //login lock decrement
+                                attempts--;
+                                JOptionPane.showMessageDialog(frame, "Invalid Login!");
+        
+                            }
+                        } else {
+                            //login lock decrement
+                            attempts--;
+                            JOptionPane.showMessageDialog(frame, "Invalid Login!");
+                        }
+        
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(frame, "Error connecting to the database");
+                    }
+                
+                }
         });
 
         registerButton.addActionListener((ActionEvent e) -> {
