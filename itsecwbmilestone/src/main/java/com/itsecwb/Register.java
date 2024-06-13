@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.regex.Pattern;
 
@@ -23,7 +24,7 @@ import net.jpountz.xxhash.XXHashFactory;
 
 public class Register {
     public static void createAndShowRegistrationScreen() {
-        //PANG INITIALIZE NG GRAPHICS
+        // PANG INITIALIZE NG GRAPHICS
         JFrame frame = new JFrame("User Registration");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 500);
@@ -56,7 +57,7 @@ public class Register {
         frame.add(new JLabel());
         frame.add(registerButton);
 
-        //LOGIC FOR BROWSING FILES
+        // LOGIC FOR BROWSING FILES
         browseButton.addActionListener((ActionEvent e) -> {
             JFileChooser fileChooser = new JFileChooser();
             int returnValue = fileChooser.showOpenDialog(null);
@@ -87,20 +88,31 @@ public class Register {
                 return;
             }
             if (!isValidPassword(password)) {
-                JOptionPane.showMessageDialog(frame, "Invalid password. Password must be at least 8 characters long and contain at least one letter and one number.");
+                JOptionPane.showMessageDialog(frame,
+                        "Invalid password. Password must be at least 8 characters long and contain at least one letter and one number.");
                 return;
             }
 
             String jdbcString = "jdbc:sqlite:./itsecwbmilestone/SQLite/usersdb.db";
             try (Connection connection = DriverManager.getConnection(jdbcString);
-                //FOR UPLOADING PROFILE PIC
-                 FileInputStream fis = new FileInputStream(photoPath)) {
+                    // FOR UPLOADING PROFILE PIC
+                    FileInputStream fis = new FileInputStream(photoPath)) {
 
-                //HASHING LOGIC   
+                // Check for duplicate email
+                String checkEmailSql = "SELECT COUNT(*) FROM users WHERE email = ?";
+                PreparedStatement checkEmailStmt = connection.prepareStatement(checkEmailSql);
+                checkEmailStmt.setString(1, email);
+                ResultSet rs = checkEmailStmt.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) {
+                    JOptionPane.showMessageDialog(frame, "Email already exists. Please use a different email.");
+                    return;
+                }
+
+                // HASHING LOGIC
                 XXHashFactory factory = XXHashFactory.fastestInstance();
                 XXHash32 hash32 = factory.hash32();
                 int hash = hash32.hash(password.getBytes(), 0, password.getBytes().length, 0);
-                //END HASH LOGIC
+                // END HASH LOGIC
 
                 String sql = "INSERT INTO users (full_name, email, phone_number, profile_photo, password) VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
