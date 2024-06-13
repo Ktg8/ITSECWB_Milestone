@@ -89,7 +89,7 @@ public class Register {
             }
             if (!isValidPassword(password)) {
                 JOptionPane.showMessageDialog(frame,
-                        "Invalid password. Password must be at least 8 characters long and contain at least one letter and one number.");
+                        "Invalid password. Password must be at least 12 characters long. Must contain at least 1 uppercase and 1 lowercase letter, 1 digit, and 1 special character.");
                 return;
             }
 
