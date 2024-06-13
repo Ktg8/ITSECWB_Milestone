@@ -2,6 +2,7 @@ package com.itsecwb;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,10 +11,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.text.SimpleDateFormat;
-import java.awt.image.BufferedImage;
 import java.util.Date;
+
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -146,7 +146,6 @@ public class Register {
             } catch (IOException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage());
-                return;
             }
         });
 
