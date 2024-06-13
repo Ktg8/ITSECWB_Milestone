@@ -153,6 +153,6 @@ public class Register {
     }
 
     private static boolean isValidPassword(String password) {
-        return password != null && password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$");
+        return password != null && password.matches("^(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\\w\\s:]).{12,64}$");
     }
 }
