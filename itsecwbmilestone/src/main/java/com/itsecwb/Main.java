@@ -25,7 +25,7 @@ public class Main {
             createAndShowLoginScreen();
         });
     }
-    //Login Attempt loop counter: locks login until app close
+
     static int attempts = 3;
 
     private static void createAndShowLoginScreen() {
@@ -50,15 +50,13 @@ public class Main {
         frame.add(new JLabel());
         frame.add(registerButton);
 
-        
         loginButton.addActionListener((ActionEvent e) -> {
             String email = emailField.getText();
             String password = new String(passwordField.getPassword());
-        
+
             String jdbcString = "jdbc:sqlite:./itsecwbmilestone/SQLite/usersdb.db";
-        
+
             if (attempts == 0) {
-                // Login lock on too many attempts
                 JOptionPane.showMessageDialog(frame, "Too many login attempts!");
             } else {
                 try (Connection connection = DriverManager.getConnection(jdbcString)) {
@@ -67,48 +65,42 @@ public class Main {
                     preparedStatement.setString(1, email);
                     ResultSet resultSet = preparedStatement.executeQuery();
                     if (resultSet.next()) {
-                        // SALTING
                         String storedHash = resultSet.getString("password");
                         XXHashFactory factory = XXHashFactory.fastestInstance();
                         XXHash32 hash32 = factory.hash32();
                         int hash = hash32.hash(password.getBytes(), 0, password.getBytes().length, 0);
-                        // end of salting
-        
+
                         if (Integer.toString(hash).equals(storedHash)) {
+                            JOptionPane.showMessageDialog(frame, "Login successful!");
                             int role = resultSet.getInt("role");
                             int isAdmin = resultSet.getInt("is_admin");
                             String fullName = resultSet.getString("full_name");
-        
-                            JOptionPane.showMessageDialog(frame, "Login successful!");
-        
-                            frame.dispose(); // Close the login screen
-        
+
+                            frame.dispose();
                             if (role == 1 && isAdmin == 0) {
-                                UserPanel.createAndShowUserPanel(fullName);
+                                UserPanel.createAndShowUserPanel(fullName, email);
                             } else if (role == 0 && isAdmin == 1) {
                                 AdminPanel.createAndShowAdminPanel();
                             }
                         } else {
-                            // login lock decrement
                             attempts--;
                             JOptionPane.showMessageDialog(frame, "Invalid Login!");
                         }
                     } else {
-                        // login lock decrement
                         attempts--;
                         JOptionPane.showMessageDialog(frame, "Invalid Login!");
                     }
-        
+
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(frame, "Error connecting to the database");
                 }
-        
             }
         });
+
         registerButton.addActionListener((ActionEvent e) -> {
-            frame.dispose(); // Close the login screen
-            Register.createAndShowRegistrationScreen(); // Open the registration screen
+            frame.dispose();
+            Register.createAndShowRegistrationScreen();
         });
 
         frame.setVisible(true);
