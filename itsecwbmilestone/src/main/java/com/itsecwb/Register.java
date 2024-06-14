@@ -158,7 +158,7 @@ public class Register {
     }
 
     private static boolean isValidEmail(String email) {
-        return email != null && email.matches("^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$");
+        return email != null && email.matches("^[0-9a-zA-Z!#$%&'*+/=?^_`{|}~-]{1,64}(?:\\.[0-9a-zA-Z!#$%&'*+/=?^_`{|}~-]+)*@(?:[0-9a-zA-Z](?:[0-9a-zA-Z-]{0,255}[0-9a-zA-Z])?\\.)+[a-zA-Z]{2,}$");
     }
 
     private static boolean isValidPhoneNumber(String phoneNumber) {
