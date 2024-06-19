@@ -11,15 +11,11 @@ var User = require('./models/userModel');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-/*
-app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, 'views', 'index.html'));
-});
-*/
-
+//page redirection
 app.get('/', function(req, res) {
     res.redirect('/register');
 });
+
 // Route to serve the registration form
 app.get('/register', function(req, res) {
     res.sendFile(path.join(__dirname, 'views', 'register.html'));
@@ -29,8 +25,7 @@ app.get('/index', function(req, res) {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-
-// Use the user routes
+// Use the user routes / backend handling
 app.use('/api', userRoutes);
 
 app.listen(4000, function() {
