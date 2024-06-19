@@ -2,9 +2,10 @@ var connection = require('../database');
 
 var User = function(user) {
     this.id = user.id;
-    this.name = user.full_name;
+    this.full_name = user.full_name;
     this.email = user.email;
-    this.role = user.role
+    this.role = user.role || "user";
+    this.password = user.password
 };
 
 User.getAll = function(result) {
@@ -18,5 +19,18 @@ User.getAll = function(result) {
         }
     });
 };
+
+User.create = function(newUser, result) {
+    connection.query("INSERT INTO USER_INFO SET ?", newUser, function(err, res) {
+        if (err) {
+            console.error('Error creating user:', err);
+            result(err, null);
+        } else {
+            console.log('User created successfully');
+            result(null, { id: res.insertId, ...newUser });
+        }
+    });
+};
+
 
 module.exports = User;
