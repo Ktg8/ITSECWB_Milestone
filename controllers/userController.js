@@ -36,7 +36,7 @@ exports.registerUser = function(req, res) {
                 res.status(500).send('Error registering user');
             } else {
                 console.log('User registered successfully:', user);
-                res.redirect('/index.html'); // Redirect to index.html after successful registration
+                res.redirect('/index'); // Redirect to index.html after successful registration
             }
         });
     });

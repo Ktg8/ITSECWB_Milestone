@@ -29,35 +29,9 @@ app.get('/index', function(req, res) {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-app.post('/register', function(req, res) {
-    const { full_name, email, password } = req.body;
-    // Hash the password
-    bcrypt.hash(password, 10, function(err, hash) {
-        if (err) {
-            console.error('Error hashing password:', err);
-            res.status(500).send('Error registering user');
-            return;
-        }
-        // Create a new user object
-        var newUser = new User({
-            full_name: full_name,
-            email: email,
-            password: hash // Store the hashed password
-        });
-        // Save the new user to the database
-        User.create(newUser, function(err, user) {
-            if (err) {
-                console.error('Error registering user:', err);
-                res.status(500).send('Error registering user');
-            } else {
-                console.log('User registered successfully:', user);
-                res.redirect('/index'); // Redirect to index.html after successful registration
-            }
-        });
-    });
-})
+
 // Use the user routes
-app.use('/api/users', userRoutes);
+app.use('/api', userRoutes);
 
 app.listen(4000, function() {
     console.log('App listening on port 4000');
