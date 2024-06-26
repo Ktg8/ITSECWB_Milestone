@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   const registerForm = document.getElementById("register-form");
   registerForm.addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent form submission
+    event.preventDefault(); 
 
     const formData = new FormData(registerForm);
     fetch("/api/register", {

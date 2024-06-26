@@ -32,5 +32,19 @@ User.create = function(newUser, result) {
     });
 };
 
+User.findByEmail = function (email, result) {
+    connection.query("SELECT * FROM USER_INFO WHERE email = ?", [email], function (err, res) {
+        if (err) {
+            console.error('Error executing query:', err);
+            result(err, null);
+        } else if (res.length > 0) {
+            result(null, res[0]);
+        } else {
+            result(null, null);
+        }
+    });
+};
+
+
 
 module.exports = User;

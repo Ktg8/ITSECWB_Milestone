@@ -36,7 +36,36 @@ exports.registerUser = function(req, res) {
                 res.status(500).send('Error registering user');
             } else {
                 console.log('User registered successfully:', user);
-                res.redirect('/index'); // Redirect to index.html after successful registration
+                res.redirect('/login');
+            }
+        });
+    });
+};
+
+exports.loginUser = function (req, res) {
+    const { email, password } = req.body;
+
+    User.findByEmail(email, function (err, user) {
+        if (err) {
+            console.error('Error fetching user:', err);
+            res.status(500).send('Error logging in');
+            return;
+        }
+        if (!user) {
+            res.status(401).send('Invalid email or password');
+            return;
+        }
+        bcrypt.compare(password, user.password, function (err, isMatch) {
+            if (err) {
+                console.error('Error comparing passwords:', err);
+                res.status(500).send('Error logging in');
+                return;
+            }
+            if (isMatch) {
+                console.log('User logged in successfully:', user);
+                res.redirect('/index');
+            } else {
+                res.status(401).send('Invalid email or password');
             }
         });
     });

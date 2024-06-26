@@ -13,12 +13,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //page redirection
 app.get('/', function(req, res) {
-    res.redirect('/register');
+    res.redirect('/login');
 });
 
 // Route to serve the registration form
 app.get('/register', function(req, res) {
     res.sendFile(path.join(__dirname, 'views', 'register.html'));
+});
+
+app.get('/login', function(req, res) {
+    res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
 app.get('/index', function(req, res) {
