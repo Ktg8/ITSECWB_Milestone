@@ -15,7 +15,7 @@ exports.getAllUsers = function(req, res) {
 };
 
 exports.registerUser = function(req, res) {
-    const { full_name, email, password } = req.body;
+    const { full_name, email, password, phone_no, profile_photo } = req.body;
     // Hash the password
     bcrypt.hash(password, 10, function(err, hash) {
         if (err) {
@@ -27,6 +27,8 @@ exports.registerUser = function(req, res) {
         var newUser = new User({
             full_name: full_name,
             email: email,
+            profile_photo: profile_photo,
+            phone_no: phone_no,
             password: hash // Store the hashed password
         });
         // Save the new user to the database

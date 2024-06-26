@@ -5,7 +5,9 @@ var User = function(user) {
     this.full_name = user.full_name;
     this.email = user.email;
     this.role = user.role || "user";
-    this.password = user.password
+    this.password = user.password;
+    this.phone_no = user.phone_no;
+    this.profile_photo = user.profile_photo;
 };
 
 User.getAll = function(result) {
