@@ -9,21 +9,21 @@
 <body>
     <div id="registration-form">
         <h1>User Registration</h1>
-        <form action="/api/register" method="post">
+        <form action="/api/register" method="post" id="register-form">
             <label for="full_name">Name:</label>
-            <input type="text" id="full_name" name="full_name" required><br><br>
+            <input type="text" id="full_name" name="full_name" pattern="^[\\p{L} .'-]+$" title="Only letters, spaces, dots, hyphens, and apostrophes are allowed" required><br><br>
             
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br><br>
+            <input type="email" id="email" name="email" pattern="^[0-9a-zA-Z!#$%&'*+/=?^_`{|}~-]{1,64}(?:\\.[0-9a-zA-Z!#$%&'*+/=?^_`{|}~-]+)*@(?:[0-9a-zA-Z](?:[0-9a-zA-Z-]{0,255}[0-9a-zA-Z])?\\.)+[a-zA-Z]{2,}$" title="Enter a valid email address" required><br><br>
             
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br><br>
+            <input type="password" id="password" name="password" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{12,64}$" title="Password must be between 12-64 characters and include at least one lowercase letter, one uppercase letter, one numeric digit, and one special character" required><br><br>
             
             <label for="profile_photo">Profile Photo:</label>
             <input type="file" id="profile_photo" name="profile_photo"><br><br>
             
             <label for="phone_number">Phone Number:</label>
-            <input type="text" id="phone_no" name="phone_no"><br><br>
+            <input type="text" id="phone_no" name="phone_no" title="Enter a valid phone number" ><br><br>
             <button type="submit">Register</button>
         </form>
     </div>
