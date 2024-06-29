@@ -66,6 +66,7 @@ exports.loginUser = function (req, res) {
             }
             if (isMatch) {
                 console.log('User logged in successfully:', user);
+                res.cookie('userId', user._id, { httpOnly: true, secure: true, sameSite: 'Strict' });
                 res.redirect('/index');
             } else {
                 res.status(401).send('Invalid email or password');

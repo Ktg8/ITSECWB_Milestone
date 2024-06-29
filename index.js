@@ -1,7 +1,9 @@
 var express = require('express');
+var cookieParser = require('cookie-parser');
 var path = require('path');
 var app = express();
 var userRoutes = require('./routes/userRoutes');
+var postRoutes = require('./routes/postRoutes')
 var connection = require('./database');
 var bodyParser = require('body-parser');
 var bcrypt = require('bcrypt');
@@ -10,6 +12,7 @@ var User = require('./models/userModel');
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 //page redirection
 app.get('/', function(req, res) {
@@ -31,6 +34,7 @@ app.get('/index', function(req, res) {
 
 // Use the user routes / backend handling
 app.use('/api', userRoutes);
+app.use('/api', postRoutes);
 
 app.listen(4000, function() {
     console.log('App listening on port 4000');
