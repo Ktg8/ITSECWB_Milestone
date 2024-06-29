@@ -2,6 +2,7 @@ var User = require('../models/userModel');
 var bcrypt = require('bcrypt');
 
 
+
 exports.getAllUsers = function(req, res) {
     User.getAll(function(err, users) {
         if (err) {

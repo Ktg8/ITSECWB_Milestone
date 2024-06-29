@@ -5,7 +5,10 @@ document.addEventListener("DOMContentLoaded", function () {
         
         fetch("/api/login", {
             method: "POST",
-            body: formData,
+            body: new URLSearchParams(formData),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
         })
         .then(response => {
             if (!response.ok) {
